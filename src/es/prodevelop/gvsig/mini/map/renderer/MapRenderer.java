@@ -28,7 +28,7 @@
  *   prode@prodevelop.es
  *   http://www.prodevelop.es
  *
- *   gvSIG Mini has been partially funded by IMPIVA (Instituto de la Pequeña y
+ *   gvSIG Mini has been partially funded by IMPIVA (Instituto de la Pequeï¿½a y
  *   Mediana Empresa de la Comunidad Valenciana) &
  *   European Union FEDER funds.
  *   
@@ -107,6 +107,9 @@ public abstract class MapRenderer {
 	public final static int QUADKEY_RENDERER = 2;
 	public final static int OSMPARMS_RENDERER = 4;
 	public final static int WMS_RENDERER = 5;
+	public final static int ICC_ORTO_RENDERER = 6;
+	public final static int ICC_GEOL_RENDERER = 7;
+	public final static int ICC_TOPO_RENDERER = 8;
 
 	public Point center = new Point(0, 0);
 

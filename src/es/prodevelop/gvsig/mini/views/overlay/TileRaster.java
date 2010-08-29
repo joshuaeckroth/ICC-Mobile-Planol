@@ -28,12 +28,12 @@
  *   prode@prodevelop.es
  *   http://www.prodevelop.es
  *
- *   gvSIG Mini has been partially funded by IMPIVA (Instituto de la Pequeña y
+ *   gvSIG Mini has been partially funded by IMPIVA (Instituto de la Pequeï¿½a y
  *   Mediana Empresa de la Comunidad Valenciana) &
  *   European Union FEDER funds.
  *   
  *   2009.
- *   author Rubén Blanco rblanco@prodevelop.es
+ *   author Rubï¿½n Blanco rblanco@prodevelop.es
  *
  *
  * Original version of the code made by Nicolas Gramlich.
@@ -146,6 +146,7 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 	public int pixelY;
 	public Paint mPaint = new Paint();
 	public Paint normalPaint = new Paint();
+	public Paint alphaPaint = new Paint();
 	public Paint rotatePaint = new Paint();
 	int mTouchDownX;
 	int mTouchDownY;
@@ -223,6 +224,8 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 			this.setLongClickable(true);
 			this.setOnClickListener(this);
 			this.setOnLongClickListener(this);
+			
+			this.alphaPaint.setAlpha(200);
 		} catch (Exception e) {
 			log.error("onCreate:", e);
 		} catch (OutOfMemoryError e) {
@@ -906,7 +909,7 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 						
 							c.drawBitmap(currentMapTile, temp.distanceFromCenter
 									.getX(), temp.distanceFromCenter.getY(),
-									this.normalPaint);							
+									this.alphaPaint);							
 //						c.drawBitmap(bufferBitmap, 0, 0, normalPaint);
 						
 						temp.destroy();
@@ -1840,5 +1843,7 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 		}
 	}
 
-	
+	public void setAlpha(int alpha) {
+		alphaPaint.setAlpha(alpha);
+	}
 }

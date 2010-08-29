@@ -28,7 +28,7 @@
  *   prode@prodevelop.es
  *   http://www.prodevelop.es
  *
- *   gvSIG Mini has been partially funded by IMPIVA (Instituto de la Pequeña y
+ *   gvSIG Mini has been partially funded by IMPIVA (Instituto de la Pequeï¿½a y
  *   Mediana Empresa de la Comunidad Valenciana) &
  *   European Union FEDER funds.
  *   
@@ -106,6 +106,21 @@ public class MapRendererFactory {
 				logger.debug("Found a WMS layer: " + layerTitle);
 				renderer = WMSRenderer
 						.getWMSRenderer(layerProps, layerTitle);
+				break;
+			case MapRenderer.ICC_ORTO_RENDERER:
+				logger.debug("Found ICC ORTO layer");
+				renderer = TMSRenderer
+						.getICCOrtoRenderer();
+				break;
+			case MapRenderer.ICC_GEOL_RENDERER:
+				logger.debug("Found ICC GEOL layer");
+				renderer = TMSRenderer
+						.getICCGeolRenderer();
+				break;
+			case MapRenderer.ICC_TOPO_RENDERER:
+				logger.debug("Found ICC TOPO layer");
+				renderer = TMSRenderer
+						.getICCTopoRenderer();
 				break;
 			}			
 			

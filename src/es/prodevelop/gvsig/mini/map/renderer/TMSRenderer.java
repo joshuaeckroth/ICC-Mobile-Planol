@@ -28,7 +28,7 @@
  *   prode@prodevelop.es
  *   http://www.prodevelop.es
  *
- *   gvSIG Mini has been partially funded by IMPIVA (Instituto de la Pequeña y
+ *   gvSIG Mini has been partially funded by IMPIVA (Instituto de la Pequeï¿½a y
  *   Mediana Empresa de la Comunidad Valenciana) &
  *   European Union FEDER funds.
  *   
@@ -185,19 +185,19 @@ public class TMSRenderer extends MapRenderer {
 
 	public static TMSRenderer getICCOrtoRenderer() {
 		return getTMSRenderer(
-				"http://sagitari2.icc.cat/tilecache/tilecache.py/1.0.0/orto/",
+				"http://sagitari.icc.cat/tilecache/tilecache.py/1.0.0/orto/",
 				"ICC - ORTO", "jpg", 10, 256, 3);
 	}
 
 	public static TMSRenderer getICCGeolRenderer() {
 		return getTMSRenderer(
-				"http://sagitari2.icc.cat/tilecache/tilecache.py/1.0.0/geol/",
+				"http://sagitari.icc.cat/tilecache/tilecache.py/1.0.0/geol/",
 				"ICC - GEOL", "jpg", 10, 256, 3);
 	}
 
 	public static TMSRenderer getICCTopoRenderer() {
 		return getTMSRenderer(
-				"http://sagitari2.icc.cat/tilecache/tilecache.py/1.0.0/topo/",
+				"http://sagitari.icc.cat/tilecache/tilecache.py/1.0.0/topo/",
 				"ICC - TOPO", "jpg", 10, 256, 3);
 	}
 

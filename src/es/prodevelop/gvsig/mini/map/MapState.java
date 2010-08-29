@@ -28,7 +28,7 @@
  *   prode@prodevelop.es
  *   http://www.prodevelop.es
  *
- *   gvSIG Mini has been partially funded by IMPIVA (Instituto de la Pequeña y
+ *   gvSIG Mini has been partially funded by IMPIVA (Instituto de la Pequeï¿½a y
  *   Mediana Empresa de la Comunidad Valenciana) &
  *   European Union FEDER funds.
  *   
@@ -73,6 +73,7 @@ public class MapState {
 	private static final String LON = "lon";
 	private static final String ZOOM = "zoom";
 	private static final String LAYER = "layer";
+	private static final String LAYER2 = "layer2";
 	private static final String X = "x";
 	private static final String Y = "y";
 	private static final String GVTILES = "gvtiles";	
@@ -118,6 +119,7 @@ public class MapState {
 				BufferedWriter out = new BufferedWriter(logwriter);
 				out.write(ZOOM + "=" + map.osmap.getZoomLevel()+"\n");
 				out.write(LAYER + "=" + map.osmap.getMRendererInfo().getNAME()+"\n");
+				out.write(LAYER2 + "=" + map.osmap2.getMRendererInfo().getNAME()+"\n");
 				
 				
 				out.write(X + "=" + map.osmap.getMRendererInfo().getCenter().getX() +"\n");
@@ -172,7 +174,8 @@ public class MapState {
 			}
 			
 			int zoom = Integer.valueOf(properties.get(ZOOM).toString()).intValue();
-			String layer = properties.get(LAYER).toString();	
+			String layer = properties.get(LAYER).toString();
+			String layer2 = properties.get(LAYER2).toString();
 			String gvTilesPath = properties.get(GVTILES).toString();			
 				
 			if (gvTilesPath.compareTo("") != 0 && gvTilesPath.compareToIgnoreCase("null") != 0) {
@@ -183,6 +186,10 @@ public class MapState {
 			map.osmap.onLayerChanged(layer);
 			map.osmap.setMapCenter(x, y);
 			map.osmap.setZoomLevel(zoom);
+			
+			map.osmap2.onLayerChanged(layer2);
+			map.osmap2.setMapCenter(x, y);
+			map.osmap2.setZoomLevel(zoom);
 			
 			return true;
 		} catch (Exception e) {
