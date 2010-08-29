@@ -119,7 +119,6 @@ public class MapState {
 				BufferedWriter out = new BufferedWriter(logwriter);
 				out.write(ZOOM + "=" + map.osmap.getZoomLevel()+"\n");
 				out.write(LAYER + "=" + map.osmap.getMRendererInfo().getNAME()+"\n");
-				out.write(LAYER2 + "=" + map.osmap2.getMRendererInfo().getNAME()+"\n");
 				
 				
 				out.write(X + "=" + map.osmap.getMRendererInfo().getCenter().getX() +"\n");
@@ -186,10 +185,6 @@ public class MapState {
 			map.osmap.onLayerChanged(layer);
 			map.osmap.setMapCenter(x, y);
 			map.osmap.setZoomLevel(zoom);
-			
-			map.osmap2.onLayerChanged(layer2);
-			map.osmap2.setMapCenter(x, y);
-			map.osmap2.setZoomLevel(zoom);
 			
 			return true;
 		} catch (Exception e) {

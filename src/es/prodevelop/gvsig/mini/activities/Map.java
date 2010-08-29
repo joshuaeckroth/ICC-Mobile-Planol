@@ -180,7 +180,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 	public static String twitpass = null;
 	private ViewSimpleLocationOverlay mMyLocationOverlay;
 	public TileRaster osmap;
-	public TileRaster osmap2;
 	public final Route route = new Route();
 	public NamedMultiPoint nameds;
 	private Point nearestPOI;
@@ -334,12 +333,8 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 					log.debug("map state was not persisted. Loading ICC ORTO");
 					this.osmap.setZoomLevel(3);
 					this.osmap.setMapCenter(0, 0);
-					this.osmap.setRenderer(TMSRenderer
-							.getICCOrtoRenderer());
-					this.osmap2.setZoomLevel(3);
-					this.osmap2.setMapCenter(0, 0);
-					this.osmap2.setRenderer(TMSRenderer
-							.getICCTopoRenderer());
+					this.osmap.setRenderer(TMSRenderer.getICCOrtoRenderer(),
+							TMSRenderer.getICCTopoRenderer());
 				}
 			}
 
@@ -520,8 +515,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 					calculateRoute();
 					osmap.setMapCenter(p.projectedCoordinates.getX(),
 							p.projectedCoordinates.getY());
-					osmap2.setMapCenter(p.projectedCoordinates.getX(),
-							p.projectedCoordinates.getY());
 					break;
 				case 1:
 					log.debug("from NameFinderActivity: route to here");
@@ -532,8 +525,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 					calculateRoute();
 					osmap.setMapCenter(p1.projectedCoordinates.getX(),
 							p1.projectedCoordinates.getY());
-					osmap2.setMapCenter(p1.projectedCoordinates.getX(),
-							p1.projectedCoordinates.getY());
 					break;
 				case 2:
 					log.debug("from NameFinderActivity: set map center");
@@ -543,9 +534,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 					osmap.setMapCenterFromLonLat(p2.getX(), p2.getY());
 					if (osmap.getMRendererInfo() instanceof OSMRenderer)
 						osmap.setZoomLevel(p2.zoom);
-					osmap2.setMapCenterFromLonLat(p2.getX(), p2.getY());
-					if (osmap2.getMRendererInfo() instanceof OSMRenderer)
-						osmap2.setZoomLevel(p2.zoom);
 					break;
 				}
 
@@ -559,7 +547,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 					if (layerName != null) {
 						log.debug("load layer: " + layerName);
 						this.osmap.onLayerChanged(layerName);
-						this.osmap2.onLayerChanged(layerName);
 					}
 					break;
 				}
@@ -586,11 +573,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 						.getCRS("EPSG:4326"), CRSFactory.getCRS(osmap
 						.getMRendererInfo().getSRS()));
 				osmap.animateTo(coords[0], coords[1]);
-				double[] coords2 = ConversionCoords.reproject(pLoc
-						.getLongitude(), pLoc.getLatitude(), CRSFactory
-						.getCRS("EPSG:4326"), CRSFactory.getCRS(osmap2
-						.getMRendererInfo().getSRS()));
-				osmap2.animateTo(coords2[0], coords2[1]);
 			}
 			// osmap.animateTo(pLoc.getLongitude(), pLoc
 			// .getLatitude());
@@ -604,8 +586,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 		} finally {
 			if (osmap != null)
 				osmap.postInvalidate();
-			if (osmap2 != null)
-				osmap2.postInvalidate();
 		}
 	}
 
@@ -762,13 +742,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 					}
 					this.osmap.setZoomLevel(15, true);
 					this.osmap
-							.setMapCenterFromLonLat(
-									this.mMyLocationOverlay.mLocation
-											.getLongitudeE6() / 1E6,
-									this.mMyLocationOverlay.mLocation
-											.getLatitudeE6() / 1E6);
-					this.osmap2.setZoomLevel(15, true);
-					this.osmap2
 							.setMapCenterFromLonLat(
 									this.mMyLocationOverlay.mLocation
 											.getLongitudeE6() / 1E6,
@@ -1185,7 +1158,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 
 			Utils.clearLogs();
 			osmap.clearCache();
-			osmap2.clearCache();
 			this.stopSensor(this);
 			if (backpressed) {
 				log.debug("back key pressed");
@@ -1219,7 +1191,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 		try {
 			log.debug("destroy");
 			osmap.destroy();
-			osmap2.destroy();
 			// route.destroy();
 			// nameds.destroy();
 			// osmap = null;
@@ -1440,15 +1411,13 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 			String mapLayer2 = outState.getString("maplayer2");
 			log.debug("previous layer: " + mapLayer);
 			osmap.onLayerChanged(mapLayer);
-			osmap2.onLayerChanged(mapLayer2);
 			this.mMyLocationOverlay.loadState(outState);
 			log.debug("map loaded");
 		} catch (Exception e) {
 			log.error("loadMap: ", e);
-			OSMMercatorRenderer t = OSMMercatorRenderer.getMapnikRenderer();
-			this.osmap = new TileRaster(this, t, metrics.widthPixels,
-					metrics.heightPixels);
-			this.osmap2 = new TileRaster(this, t, metrics.widthPixels,
+			TMSRenderer t1 = TMSRenderer.getICCOrtoRenderer();
+			TMSRenderer t2 = TMSRenderer.getICCTopoRenderer();
+			this.osmap = new TileRaster(this, t1, t2, metrics.widthPixels,
 					metrics.heightPixels);
 
 		} finally {
@@ -1524,7 +1493,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 		try {
 			log.debug("save map to bundle");
 			outState.putString("maplayer", osmap.getMRendererInfo().getNAME());
-			outState.putString("maplayer2", osmap2.getMRendererInfo().getNAME());
 			this.mMyLocationOverlay.saveState(outState);
 			ItemContext context = this.getItemContext();
 			if (context != null)
@@ -1572,9 +1540,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 			log.debug("load UI");
 			rl.addView(this.osmap, new RelativeLayout.LayoutParams(
 					LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-			rl.addView(this.osmap2, new RelativeLayout.LayoutParams(
-					LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-			z = new ZoomControls(this);
 
 			/* Creating the main Overlay */
 			{
@@ -1586,6 +1551,7 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 				this.osmap.getOverlays().add(mMyLocationOverlay);
 			}
 
+			z = new ZoomControls(this);
 			final RelativeLayout.LayoutParams zzParams = new RelativeLayout.LayoutParams(
 					RelativeLayout.LayoutParams.WRAP_CONTENT,
 					RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -1600,7 +1566,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 				public void onClick(View v) {
 					try {
 						Map.this.osmap.zoomIn();
-						Map.this.osmap2.zoomIn();
 
 					} catch (Exception e) {
 						log.error("onZoomInClick: ", e);
@@ -1612,7 +1577,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 				public void onClick(View v) {
 					try {
 						Map.this.osmap.zoomOut();
-						Map.this.osmap2.zoomOut();
 						// Map.this.osmap.switchPanMode();
 					} catch (Exception e) {
 						log.error("onZoomOutClick: ", e);
@@ -1650,7 +1614,7 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 			trans.setVisibility(View.VISIBLE);
 			rl.addView(trans, transParams);
 
-			
+			/*
 			s = new SlideBar(this, this.osmap);
 
 			final RelativeLayout.LayoutParams slideParams = new RelativeLayout.LayoutParams(
@@ -1695,6 +1659,7 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 			});
 
 			rl.addView(s, slideParams);
+			*/
 
 			/* Controls */
 			/*
@@ -1755,16 +1720,12 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 			this.osmap.setMapCenter(longit, lat);
 			this.osmap.setZoomLevel(zoomlvl);
 			
-			this.osmap2.setMapCenter(longit, lat);
-			this.osmap2.setZoomLevel(zoomlvl);
-			
 			log
 					.debug("lat, lon, zoom: " + longit + ", " + lat + ", "
 							+ zoomlvl);
 		} catch (Exception e) {
 			log.error("loadCenter: ", e);
 			osmap.getMRendererInfo().centerOnBBox();
-			osmap2.getMRendererInfo().centerOnBBox();
 		}
 	}
 
@@ -2058,7 +2019,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 				try {
 					Map.this.clearContext();
 					osmap.invalidate();
-					osmap2.invalidate();
 				} catch (Exception e) {
 					log.error(e);
 				}
@@ -2302,11 +2262,9 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 			long current = System.currentTimeMillis();
 			if (!navigation) {
 				osmap.postInvalidate();
-				osmap2.postInvalidate();
 			} else {
 				if (current - last > Utils.REPAINT_TIME) {
 					osmap.postInvalidate();
-					osmap2.postInvalidate();
 					last = current;
 				}
 			}
@@ -2514,8 +2472,8 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 	}
 	
 	public void setLayerAlpha(int alpha) {
-		osmap2.setAlpha(alpha);
-		osmap2.postInvalidate();
+		osmap.setAlpha(alpha);
+		osmap.postInvalidate();
 	}
 
 	/**
@@ -2783,7 +2741,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 			final GPSPoint location = this.mMyLocationOverlay.mLocation;
 			if (location != null) {
 				this.osmap.setMapCenter(location);
-				this.osmap2.setMapCenter(location);
 			}
 		} catch (Exception e) {
 			log.error(e);
