@@ -355,32 +355,6 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 		final int zoomLevel = Math.max(0, Math.min(this.mRendererInfo
 				.getZOOM_MAXLEVEL(), aZoomLevel));
 		tempZoomLevel = zoomLevel;
-		// Extent viewExtent =
-		// this.map.vp.calculateExtent(this.getMRendererInfo()
-		// .getCenter(), this.getMRendererInfo().resolutions[zoomLevel],
-		// mapWidth, mapHeight);
-		// Extent maxExtent = this.getMRendererInfo().getExtent();
-		//
-		// double viewExtentWidth = viewExtent.getWidth();
-		// double viewExtentHeight = viewExtent.getHeight();
-		//
-		// double maxWidth = maxExtent.getWidth();
-		// double maxHeight = maxExtent.getHeight();
-		// if (maxWidth < viewExtentWidth || maxHeight < viewExtentHeight) {
-		// if (zoomLevel != this.getMRendererInfo().getZOOM_MAXLEVEL()) {
-		// if (zoomLevel != this.getMRendererInfo().getZoomLevel() - 1) {
-		// this.setZoomLevel(zoomLevel + 1);
-		// map.z.setIsZoomOutEnabled(false);
-		// } else {
-		// map.z.setIsZoomOutEnabled(false);
-		// }
-		// return;
-		// }
-		// }
-
-		// if (!maxExtent.contains(viewExtent)) {
-		// this.zoomIn();
-		// } else {
 
 		try {
 			this.mRendererInfo.setZoomLevel(zoomLevel);
@@ -388,29 +362,10 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 			map.vp.setDist1Pixel(map.vp.resolutions[zoomLevel]);
 		} catch (Exception e) {
 			log.error("setZoomLevel:", e);
-
 		}
-		// refresh = false;
-		// }
-		map.updateSlider();
 		map.updateZoomControl();
 		cleanZoomRectangle();
 		this.postInvalidate();
-		// try {
-		// // t.cancel();
-		// // t.purge();
-		// } catch (Exception e) {
-		//
-		// } finally {
-		// try {
-		// ZoomRefreshTask z = new ZoomRefreshTask();
-		// Timer t = new Timer();
-		// t.schedule(z, 5000);
-		// } catch (Exception e) {
-		//
-		// }
-		// }
-
 	}
 
 	/**
@@ -496,14 +451,6 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 				mScaler.setFinalScale(mScaler.getFinalScale() * 2.0f);
 			}
 
-			// Matrix m = new Matrix();
-			// m.postScale(2, 2);
-			// Bitmap resizedBitmap = Bitmap.createBitmap(bufferBitmap, 0, 0,
-			// this.getWidth(), this.getHeight(), m, true);
-			// bufferBitmap = resizedBitmap;
-			//		  
-			// zoomed = true;
-			// mapGraphics.drawImage(zoomImage.scaled(480, 640), -120, -160);
 		} catch (Exception e) {
 			log.error("zoomIn:", e);
 		}
@@ -517,8 +464,6 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 			this.mTileProvider.clearPendingQueue();
 			if (this.getMRendererInfo().getZoomLevel() != 0) {
 				this.tempZoomLevel -= 1;
-				// this.setZoomLevel(this.getMRendererInfo().getZoomLevel() -
-				// 1);
 				if (mScaler.isFinished()) {
 					mScaler.startScale(1.0f, 0.5f, Scaler.DURATION_SHORT);
 					postInvalidate();
@@ -793,9 +738,10 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 							+ centerMapTileScreenLeft + (x * tileSizePx);
 					final int tileTop = this.mTouchMapOffsetY
 							+ centerMapTileScreenTop + (y * tileSizePx);
-
+					
 					final Tile t = new Tile(tileURLString, tile, new Pixel(
 							tileLeft, tileTop));
+					
 					if (cont < tiles.length)
 						tiles[cont] = t;
 
@@ -982,8 +928,7 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 				for (MapOverlay osmvo : TileRaster.this.mOverlays)
 					if (osmvo.onSingleTapUp(e, TileRaster.this))
 						return true;
-
-				map.switchSlideBar();
+				
 			} catch (Exception ex) {
 				log.error("singletapconfirmed", ex);
 
@@ -1103,8 +1048,6 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 			map.persist();
 		} catch (Exception e) {
 			log.error("onlayerchanged:", e);
-		} finally {
-			map.updateSlider();
 		}
 	}
 
@@ -1488,7 +1431,7 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 
 		private float mStartScale;
 		private float mFinalScale;
-		protected float mCurrScale;
+		private float mCurrScale;
 
 		private long mStartTime;
 		private int mDuration;

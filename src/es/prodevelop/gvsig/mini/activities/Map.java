@@ -150,7 +150,6 @@ import es.prodevelop.gvsig.mini.utiles.Tags;
 import es.prodevelop.gvsig.mini.views.overlay.CircularRouleteView;
 import es.prodevelop.gvsig.mini.views.overlay.NameFinderOverlay;
 import es.prodevelop.gvsig.mini.views.overlay.RouteOverlay;
-import es.prodevelop.gvsig.mini.views.overlay.SlideBar;
 import es.prodevelop.gvsig.mini.views.overlay.TileRaster;
 import es.prodevelop.gvsig.mini.views.overlay.ViewSimpleLocationOverlay;
 import es.prodevelop.gvsig.mini.yours.Route;
@@ -173,7 +172,6 @@ import es.prodevelop.gvsig.mini.location.Config;
  * 
  */
 public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
-	SlideBar s;
 	SeekBar trans;
 
 	public static String twituser = null;
@@ -333,8 +331,29 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 					log.debug("map state was not persisted. Loading ICC ORTO");
 					this.osmap.setZoomLevel(3);
 					this.osmap.setMapCenter(0, 0);
-					this.osmap.setRenderer(TMSRenderer.getICCOrtoRenderer(),
-							TMSRenderer.getICCTopoRenderer());
+					String[] props1 = new String[] {
+							"3",
+							"http://sagitari.icc.cat/tilecache/tilecache.py/1.0.0/orto/",
+							"jpg",
+							"5",
+							"256",
+							"258000.000000",
+							"4485000.000000",
+							"536000.000000",
+							"4752000.000000",
+							"258000.000000",
+							"4485000.000000",
+							"EPSG:23031",
+							"1100.000000000:550.000000000:275.000000000:100.000000000:50.000000000:25.000000000:10.000000000:5.000000000:2.000000000:1.000000000:0.500000000:0.250000000"
+					};
+					String[] props2 = new String[props1.length];
+					for(int i = 0; i < props2.length; i++) {
+						props2[i] = props1[i];
+					}
+					props2[1] = "http://sagitari.icc.cat/tilecache/tilecache.py/1.0.0/topo/";
+					this.osmap.setRenderer(
+							TMSRenderer.loadProperties(props1, "ICC-ORTO"),
+							TMSRenderer.loadProperties(props2, "ICC-TOPO"));
 				}
 			}
 
@@ -1408,7 +1427,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 		try {
 			log.debug("load map from saved instance");
 			String mapLayer = outState.getString("maplayer");
-			String mapLayer2 = outState.getString("maplayer2");
 			log.debug("previous layer: " + mapLayer);
 			osmap.onLayerChanged(mapLayer);
 			this.mMyLocationOverlay.loadState(outState);
@@ -1530,7 +1548,7 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 	}
 
 	/**
-	 * Instantiates the UI: TileRaster, ZoomControls, SlideBar in a
+	 * Instantiates the UI: TileRaster, ZoomControls, SeekBar in a
 	 * RelativeLayout
 	 * 
 	 * @param savedInstanceState
@@ -1585,6 +1603,7 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 			});
 			
 			trans = new SeekBar(this);
+			trans.setProgress(100);
 			trans.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 				@Override
 				public void onProgressChanged(SeekBar seekBar, int progress,
@@ -1614,83 +1633,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 			trans.setVisibility(View.VISIBLE);
 			rl.addView(trans, transParams);
 
-			/*
-			s = new SlideBar(this, this.osmap);
-
-			final RelativeLayout.LayoutParams slideParams = new RelativeLayout.LayoutParams(
-					RelativeLayout.LayoutParams.WRAP_CONTENT,
-					RelativeLayout.LayoutParams.FILL_PARENT);
-			// slideParams.addRule(RelativeLayout.ABOVE,
-			// z.getId());
-			s.setVisibility(View.INVISIBLE);
-			slideParams.addRule(RelativeLayout.ALIGN_TOP);
-			slideParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-			slideParams.addRule(RelativeLayout.ALIGN_RIGHT);
-			slideParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-
-			s.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-				@Override
-				public void onProgressChanged(SeekBar seekBar, int progress,
-						boolean fromUser) {
-					int zoom = (int) Math.floor(progress
-							* (Map.this.osmap.getMRendererInfo()
-									.getZOOM_MAXLEVEL() + 1) / 100);
-					osmap.drawZoomRectangle(zoom);
-				}
-
-				@Override
-				public void onStartTrackingTouch(SeekBar seekBar) {
-				}
-
-				@Override
-				public void onStopTrackingTouch(SeekBar seekBar) {
-					try {
-						int zoom = (int) Math.floor(seekBar.getProgress()
-								* (Map.this.osmap.getMRendererInfo()
-										.getZOOM_MAXLEVEL() + 1) / 100);
-						// int zoom = ((SlideBar)seekBar).portions;
-						Map.this.updateSlider(zoom);
-						Map.this.osmap.setZoomLevel(zoom, true);
-						Map.this.osmap.cleanZoomRectangle();
-					} catch (Exception e) {
-						log.error("onStopTrackingTouch: ", e);
-					}
-				}
-			});
-
-			rl.addView(s, slideParams);
-			*/
-
-			/* Controls */
-			/*
-			{
-				LayoutInflater factory = LayoutInflater.from(this);
-
-				View ivLayers = (View) factory.inflate(
-						R.layout.layers_image_button, null);
-				ivLayers.setId(117);
-				final RelativeLayout.LayoutParams layersParams = new RelativeLayout.LayoutParams(
-						RelativeLayout.LayoutParams.WRAP_CONTENT,
-						RelativeLayout.LayoutParams.WRAP_CONTENT);
-				layersParams.addRule(RelativeLayout.ALIGN_TOP);
-				layersParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-
-				rl.addView(ivLayers, layersParams);
-
-				ivLayers.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						try {
-							viewLayers();
-						} catch (Exception e) {
-							log.error("onLayersClick: ", e);
-							osmap.postInvalidate();
-						}
-					}
-				});
-				this.updateSlider();
-			}
-			*/
 			log.debug("ui loaded");
 		} catch (Exception e) {
 			log.error("", e);
@@ -2350,7 +2292,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 			}
 
 			rl.removeView(c);
-			// switchSlideBar();
 		} catch (Exception e) {
 			log.error("clearContext: ", e);
 		}
@@ -2453,46 +2394,10 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 			log.error("showTweetDialog: ", e);
 		}
 	}
-
-	/**
-	 * This method sinchronizes the SlideBar position with the current
-	 * TileRaster zoom level
-	 */
-	public void updateSlider() {
-		try {
-			int progress = Math.round(this.osmap.getTempZoomLevel() * 100
-					/ (this.osmap.getMRendererInfo().getZOOM_MAXLEVEL() + 1));
-			// if (progress == 0)
-			// progress = 1;
-			this.s.setProgress(progress);
-			this.updateZoomControl();
-		} catch (Exception e) {
-			log.error("updateSlider: ", e);
-		}
-	}
 	
 	public void setLayerAlpha(int alpha) {
 		osmap.setAlpha(alpha);
 		osmap.postInvalidate();
-	}
-
-	/**
-	 * Forces to update the SlideBar to an specific zoom level
-	 * 
-	 * @param zoom
-	 *            The zoom level
-	 */
-	public void updateSlider(int zoom) {
-		try {
-			int progress = zoom * 100
-					/ (this.osmap.getMRendererInfo().getZOOM_MAXLEVEL() + 1);
-			// if (progress == 0)
-			// progress = 1;
-			this.s.setProgress(progress);
-			this.updateZoomControl();
-		} catch (Exception e) {
-			log.error("updateSlider: ", e);
-		}
 	}
 
 	private int state = Map.VOID;
@@ -2549,37 +2454,6 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 			}
 		} catch (Exception e) {
 			log.error("updateContext: ", e);
-		}
-	}
-
-	/**
-	 * Switchs from visible to invisible an viceversa the SlideBar
-	 */
-	public void switchSlideBar() {
-		try {
-			int size = rl.getChildCount();
-			View v;
-			boolean hasCircularView = false;
-			for (int i = 0; i < size; i++) {
-				v = rl.getChildAt(i);
-				if (v instanceof CircularRouleteView) {
-					hasCircularView = true;
-				}
-			}
-			if (hasCircularView) {
-				clearContext();
-				return;
-			}
-			if (s.getVisibility() == View.VISIBLE) {
-				s.setVisibility(View.INVISIBLE);
-			} else {
-				s.setVisibility(View.VISIBLE);
-			}
-
-			clearContext();
-
-		} catch (Exception e) {
-			log.error("switchSlideBar: ", e);
 		}
 	}
 

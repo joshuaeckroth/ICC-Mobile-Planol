@@ -136,7 +136,6 @@ public class TMSRenderer extends MapRenderer {
 			for (int i = 0; i < length; i++) {
 				resolutions[i] = Double.valueOf(resol[i]).doubleValue();
 			}
-
 			TMSRenderer renderer = new TMSRenderer(url, layerName, format,
 					zoomLevel, tileSize, type);
 
@@ -207,7 +206,6 @@ public class TMSRenderer extends MapRenderer {
 				zoomLevel).append("/").append(tileID[1]).append("/").append(
 				tileID[0]).append(".").append(this.getIMAGE_FILENAMEENDING())
 				.toString();
-//		logger.debug(s);
 		return s;
 	}
 	
