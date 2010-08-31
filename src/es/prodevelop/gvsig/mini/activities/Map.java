@@ -329,13 +329,13 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 				boolean succeed = mapState.load();
 				if (!succeed) {
 					log.debug("map state was not persisted. Loading ICC ORTO");
-					this.osmap.setZoomLevel(3);
-					this.osmap.setMapCenter(0, 0);
+					this.osmap.setZoomLevel(0);
+					this.osmap.setMapCenter(400300, 4578900);
 					String[] props1 = new String[] {
 							"3",
 							"http://sagitari.icc.cat/tilecache/tilecache.py/1.0.0/orto/",
 							"jpg",
-							"5",
+							"11",
 							"256",
 							"258000.000000",
 							"4485000.000000",

@@ -595,14 +595,6 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 		mapWidth = getWidth();
 		mapHeight = getHeight();
 
-		if (!mScaler.isFinished()) {
-			Matrix m = c.getMatrix();
-			m.preScale(mScaler.mCurrScale, mScaler.mCurrScale,
-					c.getWidth() / 2, c.getHeight() / 2);						
-			
-			c.setMatrix(m);
-		}
-
 		if (map.navigation) {				
 			paint = rotatePaint;
 			int rotationToDraw = -mBearing
@@ -785,6 +777,14 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 	@Override
 	public void onDraw(final Canvas c) {
 		try {
+			if (!mScaler.isFinished()) {
+				Matrix m = c.getMatrix();
+				m.preScale(mScaler.mCurrScale, mScaler.mCurrScale,
+						c.getWidth() / 2, c.getHeight() / 2);						
+				
+				c.setMatrix(m);
+			}
+			
 			drawLayer(c, mRendererInfo, 255);
 			drawLayer(c, mRendererInfoAlpha, this.alpha);
 
@@ -909,6 +909,8 @@ public class TileRaster extends View implements GeoUtils, OnClickListener,
 								new int[] { (int) e.getX(), (int) e.getY() });
 				TileRaster.this.setMapCenter(coords[0], coords[1]);
 				TileRaster.this.zoomIn();
+				log.debug("new center: " + coords[0] + "," + coords[1]);
+				log.debug("new zoom: " + TileRaster.this.getZoomLevel());
 			} catch (Exception ex) {
 				log.error("doubletap", ex);
 			}
