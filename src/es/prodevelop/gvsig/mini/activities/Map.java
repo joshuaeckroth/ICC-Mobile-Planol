@@ -595,7 +595,7 @@ public class Map extends MapLocation implements GeoUtils, DownloadWaiter {
 			}
 			// osmap.animateTo(pLoc.getLongitude(), pLoc
 			// .getLatitude());
-			if (mMyLocationOverlay.mLocation != null) {
+			if (myNavigator != null && mMyLocationOverlay.mLocation != null) {
 				connection = true;
 				myNavigator.setEnabled(connection);
 			}

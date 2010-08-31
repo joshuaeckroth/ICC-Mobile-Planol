@@ -28,12 +28,12 @@
  *   prode@prodevelop.es
  *   http://www.prodevelop.es
  *
- *   gvSIG Mini has been partially funded by IMPIVA (Instituto de la Pequeña y
+ *   gvSIG Mini has been partially funded by IMPIVA (Instituto de la Pequeï¿½a y
  *   Mediana Empresa de la Comunidad Valenciana) &
  *   European Union FEDER funds.
  *   
  *   2009.
- *   author Rubén Blanco rblanco@prodevelop.es
+ *   author Rubï¿½n Blanco rblanco@prodevelop.es
  *
  *
  * Original version of the code made by Nicolas Gramlich.
@@ -153,7 +153,7 @@ public class TileFilesystemProvider implements GeoUtils {
 		final String quadDir = TileConversor.quadKeyToDirectory(quad)
 				.toString();
 
-		String st = getSDDir();
+		String st = getSDDir();		
 		File f = new File(st + "/" + Utils.APP_DIR + "/" + Utils.MAPS_DIR
 				+ "/" + layerName + "/" + quadDir + "a.tile.gvsig");		
 
@@ -255,11 +255,11 @@ public class TileFilesystemProvider implements GeoUtils {
 //			String path = f.getAbsolutePath();
 //			path = path.substring(0, path.lastIndexOf("/"));
 //			final File f1 = new File(path);
-			log.debug("mkdirs: " /*+ path*/);
-			f.getParentFile().mkdirs();			
+//			log.debug("mkdirs: " /*+ path*/);
+			f.getParentFile().mkdirs();
 			f.createNewFile();
 //			path = null;
-			log.debug("new file created");
+			//log.debug("new file created");
 		}
 		final FileOutputStream fos = new FileOutputStream(f);
 		final BufferedOutputStream bos = new BufferedOutputStream(fos,

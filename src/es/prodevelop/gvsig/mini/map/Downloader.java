@@ -179,7 +179,8 @@ public class Downloader implements GeoUtils {
 								MAPTILEDOWNLOADER_FAIL_ID);
 						failMessage.sendToTarget();
 						log.error("Tile Loading Error " + aURLString);
-						log.error(e);		
+						log.error(e);
+						e.printStackTrace();
 					} finally {
 						Utils.closeStream(in);
 						Utils.closeStream(out);						
