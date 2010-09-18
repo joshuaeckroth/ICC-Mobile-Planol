@@ -1,3 +1,0 @@
-v0.2
-0|ICC Ortofoto;3,http://sagitari.icc.cat/tilecache/tilecache.py/1.0.0/orto/,jpg,10,256,258000,4485000,536000,4752000,397000,4618500,EPSG:23031,1100:550:275:100:50:25:10:5:2:1:0.5:0.25
-1|ICC Topographica;3,http://sagitari.icc.cat/tilecache/tilecache.py/1.0.0/topo/,jpg,10,256,258000,4485000,536000,4752000,397000,4618500,EPSG:23031,1100:550:275:100:50:25:10:5:2:1:0.5:0.25
